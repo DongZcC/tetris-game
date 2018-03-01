@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>webSocket</title>
+</head>
+<body>
+<h1>Chat Room</h1>
+<input id="sendTxt" type="text"/>
+<button id="sendBtn">发送</button>
+<script type="text/javascript">
+    var websocket = new WebSocket("ws://localhost:3000/ws");
+    websocket.onopen = function () {
+        console.log('websocket open');
+        document.getElementById("sendBtn").onclick = function () {
+            var txt = document.getElementById("sendTxt").value;
+            if (txt) {
+                websocket.send(txt);
+                // 清空
+                document.getElementById("sendTxt").value = "";
+            }
+        }
+    }
+    websocket.onclose = function () {
+        console.log("webSocket close");
+    }
+
+    function showMessage(data) {
+        var div = document.createElement('div');
+        div.innerHTML = data;
+        document.body.appendChild(div);
+    }
+
+    websocket.onmessage = function (e) {
+        console.log(e.data);
+        // 收到消息的时候动态创建一个div 拼接到body中
+        showMessage(e.data);
+    }
+
+</script>
+</body>
+</html>
